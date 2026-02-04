@@ -1,0 +1,26 @@
+name: Manga-Sync-Automation
+on:
+  schedule:
+    - cron: '0 * * * *' # تشغيل كل ساعة واحدة
+  workflow_dispatch: # يتيح لك التشغيل اليدوي أيضاً
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # ضروري لتحديث ملف data.json
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with: {python-version: '3.9'}
+      - name: Install Libs
+        run: pip install cloudscraper beautifulsoup4
+      - name: Run Scraper
+        run: python scraper.py
+      - name: Push Changes
+        run: |
+          git config --global user.name "MangaBot"
+          git config --global user.email "bot@github.com"
+          git add data.json
+          git commit -m "Auto-update manga data" || exit 0
+          git push

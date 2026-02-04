@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Manga Pro | عالم المانجا</title>
+  <style>
+    :root { --main-bg: #050505; --card-bg: #121212; --accent: #e50914; --text: #fff; }
+    body { background: var(--main-bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; text-align: center; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+    .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; border: 1px solid #222; transition: 0.3s; text-decoration: none; color: white; }
+    .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+    img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+    .title { padding: 8px; font-size: 13px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <h1 style="color: var(--accent);">MANGA <span style="color: #fff;">PRO</span></h1>
+  <div id="content" class="grid">جاري تحميل أحدث المانجا...</div>
+
+  <script>
+    fetch('data.json')
+      .then(res => res.json())
+      .then(data => {
+        const cont = document.getElementById('content');
+        cont.innerHTML = data.map(m => `
+          <a href="${m.url}" target="_blank" class="card">
+            <img src="${m.img}" loading="lazy">
+            <div class="title">${m.title}</div>
+          </a>
+        `).join('');
+      })
+      .catch(() => {
+        document.getElementById('content').innerHTML = "بانتظار تحديث البيانات من GitHub...";
+      });
+  </script>
+</body>
+</html>
